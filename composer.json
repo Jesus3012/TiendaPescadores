@@ -1,0 +1,7 @@
+{
+    "require": {
+        "picqer/php-barcode-generator": "^0.3.0",
+        "phpoffice/phpspreadsheet": "^1.12",
+        "mercadopago/dx-php": "^2.6"
+    }
+}

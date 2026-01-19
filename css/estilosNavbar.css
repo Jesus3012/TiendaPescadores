@@ -1,0 +1,166 @@
+/* Navbar*/
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    display: flex;
+    background-color: #f9f9f9;
+    transition: margin-left 0.3s ease;
+}
+
+/* SIDEBAR */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: 250px;
+    background: linear-gradient(180deg, #f4a261, #e76f51);
+    padding: 20px 15px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 2px 0 12px rgba(0,0,0,0.2);
+    transition: width 0.3s ease, background 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+    border-radius: 0 8px 8px 0;
+}
+
+/* Colapsado */
+.sidebar.closed {
+    width: 70px;
+}
+
+/* TITULO */
+.sidebar h1 {
+    color: white;
+    font-size: 1.3rem;
+    text-align: center;
+    margin: 0 0 10px 0;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.sidebar.closed h1 {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+/* INFO DEL USUARIO */
+.user-info {
+    text-align: center;
+    color: white;
+    margin-bottom: 25px;
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+.user-info strong { font-size: 1rem; }
+.user-info span { font-size: 0.9rem; opacity: 0.9; }
+
+.sidebar.closed .user-info {
+    opacity: 0;
+    transform: translateX(-20px);
+}
+
+/* BOTÓN HAMBURGUESA */
+.toggle-btn {
+    background: #ffffff22;
+    border: none;
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    padding: 8px;
+    border-radius: 10%;
+    align-self: flex-end;
+    transition: all 0.3s ease;
+}
+
+.toggle-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1) rotate(90deg);
+}
+
+/* NAV LINKS */
+.nav-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    border-radius: 8px;
+    transition: background 0.3s, padding-left 0.3s, transform 0.3s;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    background: rgba(255,255,255,0.2);
+    padding-left: 20px;
+    transform: translateX(3px);
+}
+
+.nav-links i {
+    font-size: 18px;
+    width: 28px;
+    text-align: center;
+}
+
+/* OCULTAR TEXTOS CUANDO ESTÁ CERRADO */
+.sidebar.closed .nav-links span,
+.sidebar.closed .logout span { display: none; }
+
+/* CERRAR SESIÓN */
+.logout {
+    margin-top: auto;
+    background-color: #f6f6f6;
+    color: #222;
+    text-align: center;
+    padding: 12px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.logout:hover {
+    background-color: #dfa190;
+    color: #000;
+}
+
+/* CONTENIDO */
+.content {
+    flex: 1;
+    padding: 30px;
+    transition: margin-left 0.3s ease;
+    margin-left: 250px; /* sidebar abierto */
+}
+
+.sidebar.closed ~ .content {
+    margin-left: 70px;
+}
+
+/* TRANSICIÓN SUAVE PARA TEXTOS */
+.sidebar span {
+    transition: opacity 0.3s, transform 0.3s;
+}
+.sidebar.closed span {
+    opacity: 0;
+    transform: translateX(-10px);
+}
+
+/* RESPONSIVE */
+@media(max-width: 768px){
+    .sidebar { transform: translateX(-100%); width: 250px; }
+    body.sidebar-open .sidebar { transform: translateX(0); }
+    .content { margin-left: 0 !important; }
+}
+
