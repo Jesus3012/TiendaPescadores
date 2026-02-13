@@ -66,6 +66,49 @@ try {
         );
         $rep->execute();
 
+        //  4.1 RECONSTRUIR PEDIDOS SEGÚN REPORTE_PROVEEDOR REAL DEL DÍA
+        $rp = $conn->prepare("
+            SELECT ventas
+            FROM reporte_proveedor
+            WHERE producto_id = ?
+            AND proveedor = ?
+            AND DATE(fecha_conteo) = CURDATE()
+        ");
+        $rp->bind_param("is", $v['id_producto'], $v['proveedor']);
+        $rp->execute();
+        $resRp = $rp->get_result()->fetch_assoc();
+
+        $ventasRealesHoy = $resRp['ventas'] ?? 0;
+
+        // Buscar último pedido del producto
+        $pedido = $conn->prepare("
+            SELECT id
+            FROM pedidos
+            WHERE id_producto = ?
+            ORDER BY fecha DESC
+            LIMIT 1
+        ");
+        $pedido->bind_param("i", $v['id_producto']);
+        $pedido->execute();
+        $resPedido = $pedido->get_result();
+
+        if ($resPedido->num_rows > 0) {
+            $p = $resPedido->fetch_assoc();
+
+            $updPedido = $conn->prepare("
+                UPDATE pedidos
+                SET cantidad_pedida = ?, faltante = ?
+                WHERE id = ?
+            ");
+            $updPedido->bind_param(
+                "iii",
+                $ventasRealesHoy,
+                $ventasRealesHoy,
+                $p['id']
+            );
+            $updPedido->execute();
+        }
+
         // 5. Registrar cancelación
         $motivo = "Cancelación total del ticket";
         $ins = $conn->prepare("

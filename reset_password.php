@@ -59,8 +59,6 @@ if ($res->num_rows !== 1) {
     exit;
 }
 
-$email = $res->fetch_assoc()['email'];
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     csrf_check();
 
@@ -71,28 +69,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'text' => 'Las contraseñas no coinciden'
         ];
     } else {
+
+        //  REVALIDAR TOKEN EN EL MOMENTO REAL DE USO
+        $stmt = $conn->prepare("
+            SELECT email FROM password_resets
+            WHERE token = ? AND expires_at > NOW()
+            LIMIT 1
+        ");
+        $stmt->bind_param("s", $token);
+        $stmt->execute();
+        $check = $stmt->get_result();
+
+        if ($check->num_rows !== 1) {
+            $_SESSION['swal'] = [
+                'icon' => 'error',
+                'title' => 'Enlace expirado',
+                'text' => 'Este enlace ya no es válido. Solicita uno nuevo.'
+            ];
+            header('Location: forgot_password.php');
+            exit;
+        }
+
+        $email = $check->fetch_assoc()['email'];
+
         $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 
         $stmt = $conn->prepare("UPDATE usuarios SET password = ? WHERE email = ?");
         $stmt->bind_param("ss", $password, $email);
         $stmt->execute();
 
+        // invalidar token
         $stmt = $conn->prepare("DELETE FROM password_resets WHERE token = ?");
         $stmt->bind_param("s", $token);
         $stmt->execute();
 
         $_SESSION['swal'] = [
             'icon'  => 'success',
-            'title' => 'Contraseña restablecida',
-            'html'  => 'Tu contraseña se actualizó correctamente.<br><small>Te redirigiremos al inicio de sesión</small>',
-            'timer' => 2500,
-            'redirect' => 'login.php'
+            'title' => 'Contraseña restablecida'
         ];
 
         header('Location: login.php');
         exit;
     }
 }
+
 ?>
 
 <div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center px-3">

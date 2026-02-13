@@ -4,6 +4,12 @@ include 'includes/db.php';
 include 'includes/csrf.php';
 include('includes/header.php');
 
+// ======================================
+// LIMPIEZA AUTOMÁTICA DE TOKENS VENCIDOS
+// ======================================
+$conn->query("DELETE FROM password_resets WHERE expires_at <= NOW()");
+
+
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
@@ -55,7 +61,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $res = $stmt->get_result();
 
     /* ===============================
-       ❌ CORREO NO REGISTRADO
+       CORREO NO REGISTRADO
     =============================== */
     if ($res->num_rows === 0) {
         $_SESSION['swal'] = [
@@ -68,16 +74,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
+    // ======================================
+    // ELIMINAR TOKENS ANTERIORES DE ESTE EMAIL
+    // ======================================
+    $stmt = $conn->prepare("DELETE FROM password_resets WHERE email = ?");
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+
     /* ===============================
        CREAR TOKEN
     =============================== */
     $token   = bin2hex(random_bytes(32));
-    $expires = date('Y-m-d H:i:s', time() + 900); // 15 minutos
+
 
     $stmt = $conn->prepare("
         INSERT INTO password_resets (email, token, expires_at)
-        VALUES (?, ?, ?)
+        VALUES (?, ?, DATE_ADD(NOW(), INTERVAL 15 MINUTE))
     ");
+    $stmt->bind_param("ss", $email, $token);
+
     if (!$stmt) {
         die("Error SQL: " . $conn->error);
     }
@@ -303,7 +318,7 @@ document.addEventListener('DOMContentLoaded', () => {
         form.addEventListener('submit', function (e) {
             e.preventDefault();
 
-            // 🔒 DESHABILITAR BOTÓN (ANTI DOBLE ENVÍO)
+            // DESHABILITAR BOTÓN (ANTI DOBLE ENVÍO)
             const btn = form.querySelector('button[type="submit"]');
             if (btn) btn.disabled = true;
 

@@ -78,6 +78,32 @@ $stmt4 = $conn->prepare("UPDATE productos SET cantidad = cantidad + ? WHERE id =
 $stmt4->bind_param("ii", $cantidad_devuelta, $id_producto);
 $stmt4->execute();
 
+// === 5.1 ACTUALIZAR PEDIDOS (LA PARTE QUE FALTABA) ===
+// Buscar el pedido más reciente de este producto
+$pedido = $conn->query("
+    SELECT id, cantidad_pedida, faltante
+    FROM pedidos
+    WHERE id_producto = $id_producto
+    ORDER BY fecha DESC
+    LIMIT 1
+")->fetch_assoc();
+
+if($pedido){
+    $nueva_cantidad_pedida = $pedido['cantidad_pedida'] - $cantidad_devuelta;
+    if($nueva_cantidad_pedida < 0) $nueva_cantidad_pedida = 0;
+
+    $nuevo_faltante = $pedido['faltante'] - $cantidad_devuelta;
+    if($nuevo_faltante < 0) $nuevo_faltante = 0;
+
+    $conn->query("
+        UPDATE pedidos
+        SET cantidad_pedida = $nueva_cantidad_pedida,
+            faltante = $nuevo_faltante
+        WHERE id = {$pedido['id']}
+    ");
+}
+
+
 // === 6. Revisar si quedan artículos ===
 $q2 = $conn->prepare("
     SELECT v.*, p.nombre, p.precio_venta

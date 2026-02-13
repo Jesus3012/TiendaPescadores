@@ -234,6 +234,71 @@ while ($row = $clientesFrecuentes->fetch_assoc()) {
     color: #313130ff !important;
     border-left: 5px solid #ff624dff;
 }
+
+/* ============================
+   SMALL BOX = ESTILO CARD MODERNO
+============================ */
+.small-box{
+    border-radius:14px !important;
+    padding:22px !important;
+    color:#fff !important;
+    transition:0.25s ease-in-out;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.10) !important;
+    border:none !important;
+    position:relative;
+    overflow:hidden;
+}
+
+/* Hover como tus cards */
+.small-box:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.18);
+}
+
+/* Título */
+.small-box h4{
+    font-size:16px;
+    font-weight:600;
+    margin-bottom:8px;
+    opacity:0.9;
+}
+
+/* Número grande */
+.small-box h2{
+    font-size:28px;
+    font-weight:800;
+    margin:0;
+}
+
+/* Badge más fino */
+.small-box .badge{
+    margin-top:10px;
+    font-size:12px;
+    padding:6px 12px;
+    border-radius:20px;
+    background:rgba(255,255,255,0.2);
+    color:#fff;
+    border:1px solid rgba(255,255,255,0.25);
+}
+
+/* Icono grande elegante */
+.small-box .icon{
+    position:absolute;
+    right:18px;
+    bottom:15px;
+    font-size:55px;
+    opacity:0.15;
+}
+
+/* Footer limpio */
+.small-box-footer{
+    margin-top:14px;
+    font-size:13px;
+    color:rgba(255,255,255,0.85);
+    background:none !important;
+    padding:0 !important;
+}
+
 </style>
 
 <div class="content-wrapper">

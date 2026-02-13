@@ -88,6 +88,42 @@ $del->bind_param("i", $idVenta);
 $del->execute();
 
 // -------------------------------------------------------
+//  6.1 RECONSTRUIR PEDIDOS DESDE REPORTE_PROVEEDOR
+// -------------------------------------------------------
+
+$recalculo = $conn->prepare("
+    SELECT ventas
+    FROM reporte_proveedor
+    WHERE producto_id = ?
+      AND DATE(fecha_conteo) = CURDATE()
+    LIMIT 1
+");
+$recalculo->bind_param("i", $idProducto);
+$recalculo->execute();
+$resRec = $recalculo->get_result();
+
+$ventasReales = 0;
+if ($resRec->num_rows > 0) {
+    $ventasReales = $resRec->fetch_assoc()['ventas'];
+}
+
+// actualizar el último pedido de ese producto
+$updPedido = $conn->prepare("
+    UPDATE pedidos
+    SET cantidad_pedida = ?, faltante = ?
+    WHERE id_producto = ?
+    ORDER BY fecha DESC
+    LIMIT 1
+");
+$updPedido->bind_param(
+    "iii",
+    $ventasReales,
+    $ventasReales,
+    $idProducto
+);
+$updPedido->execute();
+
+// -------------------------------------------------------
 // 7. Consultar artículos restantes del ticket
 // -------------------------------------------------------
 $q = $conn->prepare("

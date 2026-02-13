@@ -226,6 +226,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_venta'])) {
   background: radial-gradient(circle at top, #fff7ed, #f8f9fa);
 }
 
+
 /* =====================================================
    CARD PRINCIPAL
 ===================================================== */
@@ -388,6 +389,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_venta'])) {
   color:white;
   box-shadow:0 12px 28px rgba(34,197,94,.45);
   transition:.2s;
+  width:100%;
+  font-size:26px;
+  padding:22px;
+  letter-spacing:1px;
 }
 
 .pos-btn-venta:hover{
@@ -397,7 +402,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['registrar_venta'])) {
 /* =====================================================
    MÉTODOS DE PAGO
 ===================================================== */
-
 .metodos-wrapper {
   display: flex;
   justify-content: center;

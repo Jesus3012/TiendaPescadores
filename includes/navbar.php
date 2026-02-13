@@ -236,6 +236,7 @@ $rol = $_SESSION['rol'] ?? 'Sin rol';
             <summary style="cursor:pointer;"> <i class="fas fa-store fa-anim"></i> Inventario / Ventas</summary>
             <div style="display:flex; flex-direction:column; gap:6px; padding-top:8px;">
               <a href="productos.php">Gestión Productos</a>
+              <a href="pedidos.php"><i class="fas fa-shipping-fast fa-anim"></i><span>Pedidos</span></a>
               <a href="venta_admin.php">Registrar Ventas</a>
               <a href="ventas_proveedor.php">Registro Ventas por Proveeedor</a>
               <a href="historial_ventas.php">Historial / Cancelación</a>
@@ -281,6 +282,7 @@ $rol = $_SESSION['rol'] ?? 'Sin rol';
             <div class="submenu-items">
               <a href="productos.php"><i class="fas fa-box fa-anim"></i><span>Gestión Productos</span></a>
               <a href="ventas_proveedor.php"><i class="fas fa-handshake fa-anim"></i><span>Registro Inventario por Proveeedor</span></a>
+              <a href="pedidos.php"><i class="fas fa-shipping-fast fa-anim"></i><span>Pedidos</span></a>
               <a href="historial_ventas.php"><i class="fas fa-receipt fa-anim"></i><span>Historial / Cancelación</span></a>
               <a href="venta_admin.php"><i class="fas fa-cash-register fa-anim"></i><span>Registrar Ventas</span></a>
             </div>
